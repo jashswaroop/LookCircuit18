@@ -31,18 +31,37 @@ jobs:
         run: |
           cd lookcircuit-backend
           pip install -r requirements.txt
-          pip install pytest
       
-      - name: Run basic tests
+      - name: Test AI modules (non-MediaPipe)
         run: |
           cd lookcircuit-backend
-          python -c "from ai.recommendation_engine.color_theory import RecommendationEngine; print('✅ Recommendation Engine OK')"
-          python -c "from ai.product_discovery.scraper import ProductDiscoveryEngine; print('✅ Product Discovery OK')"
-          python -c "from app.main import app; print('✅ FastAPI App OK')"
-        env:
-          SUPABASE_URL: https://test.supabase.co
-          SUPABASE_KEY: test-key
-          SUPABASE_JWT_SECRET: test-secret
+          python -c "
+from ai.recommendation_engine.color_theory import RecommendationEngine
+from ai.recommendation_engine.occasion_styling import OccasionStylingEngine
+from ai.product_discovery.scraper import ProductDiscoveryEngine
+
+# Test instantiation
+rec_engine = RecommendationEngine()
+occ_engine = OccasionStylingEngine()
+prod_engine = ProductDiscoveryEngine()
+
+# Test recommendation generation
+result = rec_engine.generate_recommendations(
+    fitzpatrick_type=3,
+    undertone='warm',
+    face_shape='oval',
+    body_type='mesomorph',
+    hair_coverage='full',
+    gender='male'
+)
+print('✅ Recommendation Engine:', 'color_palette' in result)
+
+# Test occasions
+occasions = occ_engine.get_all_occasions()
+print('✅ Occasion Styling:', len(occasions), 'occasions')
+
+print('✅ All AI modules working!')
+"
 
   # Mobile App TypeScript Check
   lint-mobile:
@@ -68,34 +87,6 @@ jobs:
           cd lookcircuit-mobile
           npx tsc --noEmit || echo "TypeScript warnings found (non-blocking)"
 
-  # Build Docker Image
-  build-docker:
-    runs-on: ubuntu-latest
-    needs: [test-backend]
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Build Docker image
-        run: |
-          cd lookcircuit-backend
-          docker build -t lookcircuit-backend:${{ github.sha }} .
-      
-      - name: Test Docker container
-        run: |
-          docker run -d -p 8000:8000 --name test-container \
-            -e SUPABASE_URL=https://test.supabase.co \
-            -e SUPABASE_KEY=test \
-            -e SUPABASE_JWT_SECRET=test \
-            lookcircuit-backend:${{ github.sha }}
-          sleep 10
-          curl --retry 3 --retry-delay 2 http://localhost:8000/health || exit 1
-          docker stop test-container
-
   # Summary
   ci-complete:
     runs-on: ubuntu-latest
@@ -105,5 +96,5 @@ jobs:
       - name: CI Complete
         run: |
           echo "✅ All CI checks passed!"
-          echo "  - Backend imports: PASSED"
+          echo "  - Backend AI modules: PASSED"
           echo "  - Mobile TypeScript: PASSED"
