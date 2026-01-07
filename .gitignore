@@ -1,0 +1,72 @@
+# LookCircuit Monorepo .gitignore
+
+# ===== Backend (Python) =====
+lookcircuit-backend/__pycache__/
+lookcircuit-backend/*.py[cod]
+lookcircuit-backend/*$py.class
+lookcircuit-backend/*.so
+lookcircuit-backend/.Python
+lookcircuit-backend/env/
+lookcircuit-backend/venv/
+lookcircuit-backend/.venv/
+lookcircuit-backend/.pytest_cache/
+lookcircuit-backend/.coverage
+lookcircuit-backend/htmlcov/
+lookcircuit-backend/dist/
+lookcircuit-backend/build/
+lookcircuit-backend/*.egg-info/
+lookcircuit-backend/*.task
+__pycache__/
+
+# Environment variables (contains secrets!)
+lookcircuit-backend/.env
+lookcircuit-mobile/.env
+
+# ===== Mobile (React Native/Expo) =====
+lookcircuit-mobile/node_modules/
+lookcircuit-mobile/.expo/
+lookcircuit-mobile/dist/
+lookcircuit-mobile/web-build/
+lookcircuit-mobile/*.jks
+lookcircuit-mobile/*.p8
+lookcircuit-mobile/*.p12
+lookcircuit-mobile/*.key
+lookcircuit-mobile/*.mobileprovision
+lookcircuit-mobile/*.orig.*
+lookcircuit-mobile/.env.local
+
+# ===== Web App =====
+web-app/node_modules/
+web-app/.next/
+web-app/out/
+web-app/build/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# ===== OS =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ===== Logs =====
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== Temp =====
+temp_config_output.txt
+*.resolved
+
+# ===== DynamicIslandProject (separate project) =====
+DynamicIslandProject/
